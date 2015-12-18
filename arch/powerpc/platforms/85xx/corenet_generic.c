@@ -59,6 +59,13 @@ void __init corenet_gen_pic_init(void)
 	}
 }
 
+/* If someone has registered a poweroff callback, invoke it */
+static void corenet_generic_halt(void)
+{
+	if (pm_power_off)
+		pm_power_off();
+}
+
 /*
  * Setup the architecture
  */
@@ -77,6 +84,8 @@ void __init corenet_gen_setup_arch(void)
 	 */
 	limit_zone_pfn(ZONE_DMA32, 1UL << (31 - PAGE_SHIFT));
 #endif
+
+	ppc_md.halt = corenet_generic_halt;
 
 	pr_info("%s board\n", ppc_md.name);
 
@@ -126,6 +135,12 @@ static const struct of_device_id of_device_ids[] = {
 	},
 	{
 		.name		= "handles",
+	},
+	{
+		.name		= "gpio-poweroff",
+	},
+	{
+		.name		= "gpio-restart",
 	},
 	{}
 };
