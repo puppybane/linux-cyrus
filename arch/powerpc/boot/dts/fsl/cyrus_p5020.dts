@@ -21,6 +21,11 @@
 	#size-cells = <2>;
 	interrupt-parent = <&mpic>;
 
+	aliases {
+		ethernet0 = &enet3;
+		ethernet1 = &enet4;
+	};
+
 	memory {
 		device_type = "memory";
 	};
@@ -70,6 +75,121 @@
 				compatible = "microchip,mcp7941x";
 				reg = <0x6f>;
 			};
+		};
+
+		fman0: fman@400000 {
+			enet0: ethernet@e0000 {
+				tbi-handle = <&tbi0>;
+				status = "disabled";
+			};
+
+			mdio0: mdio@e1120 {
+				tbi0: tbi-phy@8 {
+					reg = <0x8>;
+					device_type = "tbi-phy";
+				};
+
+				
+				/* IRQ3 Active Low */
+				phy0: ethernet-phy@3 {
+					interrupts = <3 1 0 0>;
+					reg = <0x3>;
+
+					txen-skew-ps = <840>;
+					rxdv-skew-ps = <840>;
+					txc-skew-ps = <960>;
+					rxc-skew-ps = <960>;
+					rxd0-skew-ps = <0>;
+					rxd1-skew-ps = <0>;
+					rxd2-skew-ps = <0>;
+					rxd3-skew-ps = <0>;
+					txd0-skew-ps = <840>;
+					txd1-skew-ps = <840>;
+					txd2-skew-ps = <840>;
+					txd3-skew-ps = <840>;
+				};
+
+				/* IRQ1 Active Low */
+				phy1: ethernet-phy@7 {
+					interrupts = <1 1 0 0>;
+					reg = <0x7>;
+
+					txen-skew-ps = <840>;
+					rxdv-skew-ps = <840>;
+					txc-skew-ps = <960>;
+					rxc-skew-ps = <960>;
+					rxd0-skew-ps = <0>;
+					rxd1-skew-ps = <0>;
+					rxd2-skew-ps = <0>;
+					rxd3-skew-ps = <0>;
+					txd0-skew-ps = <840>;
+					txd1-skew-ps = <840>;
+					txd2-skew-ps = <840>;
+					txd3-skew-ps = <840>;
+				};
+			};
+
+			enet1: ethernet@e2000 {
+				tbi-handle = <&tbi1>;
+				status = "disabled";
+			};
+
+			mdio@e3120 {
+				tbi1: tbi-phy@8 {
+					reg = <8>;
+					device_type = "tbi-phy";
+				};
+			};
+
+			enet2: ethernet@e4000 {
+				tbi-handle = <&tbi2>;
+				status = "disabled";
+			};
+
+			mdio@e5120 {
+				tbi2: tbi-phy@8 {
+					reg = <8>;
+					device_type = "tbi-phy";
+				};
+			};
+
+			enet3: ethernet@e6000 {
+				tbi-handle = <&tbi3>;
+				phy-handle = <&phy0>;
+				phy-connection-type = "rgmii";
+			};
+
+			mdio@e7120 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				compatible = "fsl,fman-tbi";
+				reg = <0xe7120 0xee0>;
+				interrupts = <100 1 0 0>;
+
+				tbi3: tbi-phy@8 {
+					reg = <8>;
+					device_type = "tbi-phy";
+				};
+			};
+
+			enet4: ethernet@e8000 {
+				tbi-handle = <&tbi4>;
+				phy-handle = <&phy1>;
+				phy-connection-type = "rgmii";
+			};
+
+			mdio@e9120 {
+				tbi4: tbi-phy@8 {
+					reg = <8>;
+					device_type = "tbi-phy";
+				};
+			};
+
+			enet5: ethernet@f0000 {
+				phy-connection-type = "xgmii";
+				status = "disabled";
+			};
+
 		};
 	};
 
@@ -150,6 +270,20 @@
 				  0 0x00010000>;
 		};
 	};
+	fsl,dpaa {
+		compatible = "fsl,p5020-dpaa", "fsl,dpaa";
+
+		ethernet@3 {
+			compatible = "fsl,p5020-dpa-ethernet", "fsl,dpa-ethernet";
+			fsl,fman-mac = <&enet3>;
+		};
+		ethernet@4 {
+			compatible = "fsl,p5020-dpa-ethernet", "fsl,dpa-ethernet";
+			fsl,fman-mac = <&enet4>;
+		};
+	};
+
 };
 
 /include/ "p5020si-post.dtsi"
+/include/ "qoriq-dpaa-res1.dtsi"
