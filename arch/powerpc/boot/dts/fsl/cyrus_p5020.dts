@@ -22,8 +22,12 @@
 	interrupt-parent = <&mpic>;
 
 	aliases {
+		qman = &qman;
+		bman = &bman;
 		ethernet0 = &enet3;
 		ethernet1 = &enet4;
+		ethernet3 = &enet0;
+		ethernet4 = &enet1;
 	};
 
 	memory {
